@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CanTax — Canadian Income Tax Calculator (2025)</title>
+  <meta name="description" content="Instant Canadian income tax estimates for every province and territory — federal + provincial tax, CPP, EI, marginal and average rates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230066FF'/%3E%3Ctext x='16' y='22' font-family='Inter,Arial,sans-serif' font-size='15' font-weight='800' fill='white' text-anchor='middle'%3E%24%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <div class="logo"><span class="mark">CT</span>CanTax<span class="year-chip">2025 tax year</span></div>
+      <p class="tagline">Instant Canadian income tax estimates — every province &amp; territory, federal + provincial, CPP &amp; EI.</p>
+    </div>
+  </header>
+
+  <main class="container grid">
+
+    <!-- inputs -->
+    <section class="card" aria-label="Inputs">
+      <div class="field">
+        <label for="income">Annual employment income</label>
+        <input type="number" id="income" value="75000" min="0" step="1000" />
+      </div>
+      <div class="field">
+        <label for="province">Province / territory</label>
+        <select id="province"></select>
+      </div>
+      <div class="field">
+        <label for="deductions">Deductions (RRSP, union dues…)</label>
+        <input type="number" id="deductions" value="0" min="0" step="500" />
+      </div>
+      <label class="check"><input type="checkbox" id="payroll" checked />Include CPP &amp; EI contributions</label>
+      <p class="footnote">Estimates only — includes basic personal amounts, Ontario surtax &amp; health premium, and the Quebec federal abatement. Excludes other credits, QPIP, and benefit clawbacks. Not tax advice.</p>
+    </section>
+
+    <!-- results -->
+    <section class="card" aria-label="Results">
+      <div class="hero-result">
+        <p class="hero-label">After-tax income</p>
+        <p class="hero-value" id="after-tax">$0</p>
+        <p class="hero-sub"><strong id="monthly">$0</strong> / month &nbsp;·&nbsp; <strong id="biweekly">$0</strong> / bi-weekly</p>
+      </div>
+
+      <div class="split-bar" id="split-bar" aria-hidden="true"></div>
+      <div class="legend">
+        <span><i class="swatch" style="background:#0066FF"></i>Take-home</span>
+        <span><i class="swatch" style="background:#66a3ff"></i>Federal tax</span>
+        <span><i class="swatch" style="background:#b3d1ff"></i>Provincial tax</span>
+        <span><i class="swatch" style="background:#3d3d46"></i>CPP / EI</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><p class="k">Federal tax</p><p class="v" id="fed-tax">$0</p></div>
+        <div class="stat"><p class="k" id="prov-label">Provincial tax</p><p class="v" id="prov-tax">$0</p></div>
+        <div class="stat"><p class="k">CPP + EI</p><p class="v" id="cpp-ei">$0</p></div>
+        <div class="stat"><p class="k">Total deductions</p><p class="v accent" id="total-tax">$0</p></div>
+        <div class="stat"><p class="k">Average rate</p><p class="v" id="avg-rate">0%</p></div>
+        <div class="stat"><p class="k">Marginal rate</p><p class="v" id="marg-rate">0%</p></div>
+      </div>
+
+      <h2 class="sub">Federal bracket breakdown</h2>
+      <table>
+        <thead>
+          <tr><th>Bracket</th><th class="num">Rate</th><th class="num">Income taxed</th><th class="num">Tax</th></tr>
+        </thead>
+        <tbody id="brackets"></tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      Built by <a href="https://bulbringai.com" rel="noopener">Noah Bulbring</a> · <a href="https://github.com/NoahBulbring/cantax" rel="noopener">Source on GitHub</a>
+    </div>
+  </footer>
+
+  <script src="tax-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

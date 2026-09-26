@@ -65,13 +65,20 @@
         <div class="stat"><p class="k">Marginal rate</p><p class="v" id="marg-rate">0%</p></div>
       </div>
 
-      <h2 class="sub">Federal bracket breakdown</h2>
-      <table>
+      <div class="breakdown-tabs" role="tablist" aria-label="Tax bracket breakdown">
+        <button class="breakdown-tab active" id="tab-overall" type="button" role="tab" aria-selected="true" aria-controls="breakdown-panel" data-breakdown="overall">Overall</button>
+        <button class="breakdown-tab" id="tab-provincial" type="button" role="tab" aria-selected="false" aria-controls="breakdown-panel" data-breakdown="provincial" tabindex="-1">Provincial</button>
+        <button class="breakdown-tab" id="tab-federal" type="button" role="tab" aria-selected="false" aria-controls="breakdown-panel" data-breakdown="federal" tabindex="-1">Federal</button>
+      </div>
+      <div id="breakdown-panel" role="tabpanel" aria-labelledby="tab-overall">
+        <h2 class="sub" id="breakdown-title">Overall bracket breakdown</h2>
+        <table>
         <thead>
           <tr><th>Bracket</th><th class="num">Rate</th><th class="num">Income taxed</th><th class="num">Tax</th></tr>
         </thead>
         <tbody id="brackets"></tbody>
-      </table>
+        </table>
+      </div>
     </section>
 
   </main>

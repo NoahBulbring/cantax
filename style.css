@@ -101,7 +101,31 @@ body {
 .stat .v.accent { color: var(--blue); }
 
 /* brackets table */
-h2.sub { font-size: 15px; font-weight: 700; margin: 26px 0 12px; }
+.breakdown-tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 26px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #101014;
+}
+.breakdown-tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--grey);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.breakdown-tab:hover { color: var(--white); }
+.breakdown-tab:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.breakdown-tab.active { background: var(--blue); color: var(--white); }
+h2.sub { font-size: 15px; font-weight: 700; margin: 18px 0 12px; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); }
 th { color: var(--grey); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }

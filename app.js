@@ -19,6 +19,24 @@ function marginalRate(income, brackets) {
   return brackets[brackets.length - 1].rate;
 }
 
+function combinedBracketPieces(income, federalBrackets, provincialBrackets, federalRateMultiplier = 1) {
+  if (income <= 0) return [];
+
+  const thresholds = [...federalBrackets, ...provincialBrackets]
+    .map((b) => b.upTo)
+    .filter((upTo) => upTo < income);
+  const boundaries = [0, ...new Set(thresholds), income].sort((a, b) => a - b);
+
+  return boundaries.slice(1).map((to, index) => {
+    const from = boundaries[index];
+    const rate =
+      marginalRate(to, federalBrackets) * federalRateMultiplier +
+      marginalRate(to, provincialBrackets);
+    const amount = to - from;
+    return { from, to, rate, amount, tax: amount * rate };
+  });
+}
+
 function federalBPA(netIncome) {
   const f = FEDERAL;
   if (netIncome <= f.bpaPhaseStart) return f.bpaMax;
@@ -73,6 +91,13 @@ function calculate(gross, deductions, provCode, includePayroll) {
     avgRate: gross > 0 ? totalDeducted / gross : 0,
     margRate: mFed + mProv,
     fedPieces: fed.pieces,
+    provPieces: pr.pieces,
+    overallPieces: combinedBracketPieces(
+      taxable,
+      FEDERAL.brackets,
+      prov.brackets,
+      prov.abatement ? 1 - prov.abatement : 1,
+    ),
   };
 }
 
@@ -81,6 +106,7 @@ const $ = (id) => document.getElementById(id);
 const fmt = (n) => n.toLocaleString('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
 const fmtC = (n) => n.toLocaleString('en-CA', { style: 'currency', currency: 'CAD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const pct = (n) => (n * 100).toFixed(1) + '%';
+let activeBreakdown = 'overall';
 
 function populateProvinces() {
   const sel = $('province');
@@ -132,10 +158,18 @@ function render() {
     }
   }
 
-  // federal bracket breakdown
+  const breakdowns = {
+    overall: { title: 'Overall bracket breakdown', pieces: r.overallPieces },
+    provincial: { title: `${PROVINCES[provCode].name} bracket breakdown`, pieces: r.provPieces },
+    federal: { title: 'Federal bracket breakdown', pieces: r.fedPieces },
+  };
+  const breakdown = breakdowns[activeBreakdown];
+  $('breakdown-title').textContent = breakdown.title;
+  $('breakdown-panel').setAttribute('aria-labelledby', `tab-${activeBreakdown}`);
+
   const tbody = $('brackets');
   tbody.innerHTML = '';
-  for (const p of r.fedPieces) {
+  for (const p of breakdown.pieces) {
     const tr = document.createElement('tr');
     tr.innerHTML =
       `<td>${fmt(p.from)} – ${p.to === Infinity ? '∞' : fmt(p.to)}</td>` +
@@ -147,6 +181,25 @@ function render() {
 }
 
 populateProvinces();
+document.querySelectorAll('.breakdown-tab').forEach((tab, index, tabs) => {
+  tab.addEventListener('click', () => {
+    activeBreakdown = tab.dataset.breakdown;
+    tabs.forEach((item) => {
+      const active = item === tab;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-selected', active);
+      item.tabIndex = active ? 0 : -1;
+    });
+    render();
+  });
+  tab.addEventListener('keydown', (event) => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    tabs[(index + direction + tabs.length) % tabs.length].click();
+    tabs[(index + direction + tabs.length) % tabs.length].focus();
+  });
+});
 ['income', 'deductions', 'province', 'payroll'].forEach((id) =>
   $(id).addEventListener('input', render));
 render();

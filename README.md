@@ -11,6 +11,7 @@ Instant income tax estimates for **all 13 Canadian provinces and territories** (
 - **Every jurisdiction** — federal brackets plus all 10 provinces and 3 territories, including Ontario's surtax and health premium and the Quebec federal abatement
 - **Payroll contributions** — CPP, the CPP2 second earnings ceiling, and EI (Quebec rates handled separately)
 - **Basic personal amounts** — including the federal BPA phase-out for high earners
+- **Deduction savings** — shows the estimated federal and provincial income tax saved by deductions
 - **Visual take-home split** — a stacked bar showing take-home vs federal / provincial / payroll
 - **Bracket breakdown table** — exactly how much income lands in each federal bracket
 - **Zero dependencies** — plain HTML/CSS/JS, runs entirely in the browser, nothing leaves your machine

@@ -126,10 +126,13 @@ function render() {
   const provCode = $('province').value;
   const includePayroll = $('payroll').checked;
   const r = calculate(gross, deductions, provCode, includePayroll);
+  const taxWithoutDeductions = calculate(gross, 0, provCode, false).totalTax;
+  const deductionSavings = Math.max(0, taxWithoutDeductions - r.totalTax);
 
   $('after-tax').textContent = fmt(r.afterTax);
   $('monthly').textContent = fmtC(r.afterTax / 12);
   $('biweekly').textContent = fmtC(r.afterTax / 26);
+  $('deduction-savings').textContent = fmt(deductionSavings);
   $('fed-tax').textContent = fmt(r.fedTax);
   $('prov-tax').textContent = fmt(r.provTax);
   $('cpp-ei').textContent = fmt(r.payroll.total);

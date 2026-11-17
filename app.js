@@ -1,5 +1,3 @@
-/* ── CanTax — calculation engine + UI ─────────────────────── */
-
 function taxFromBrackets(income, brackets) {
   let tax = 0, prev = 0;
   const pieces = [];
@@ -41,21 +39,17 @@ function calculate(gross, deductions, provCode, includePayroll) {
   const prov = PROVINCES[provCode];
   const taxable = Math.max(0, gross - deductions);
 
-  // Federal
   const fed = taxFromBrackets(taxable, FEDERAL.brackets);
   let fedTax = Math.max(0, fed.tax - federalBPA(taxable) * FEDERAL.creditRate);
-  if (prov.abatement) fedTax *= 1 - prov.abatement; // Quebec abatement
-  // Provincial
+  if (prov.abatement) fedTax *= 1 - prov.abatement;
   const pr = taxFromBrackets(taxable, prov.brackets);
   const provCreditRate = prov.brackets[0].rate;
   let provTax = Math.max(0, pr.tax - prov.bpa * provCreditRate);
-  // Ontario surtax
   let surtax = 0;
   if (prov.surtax) {
     for (const s of prov.surtax) surtax += Math.max(0, provTax - s.over) * s.rate;
     provTax += surtax;
   }
-  // Ontario health premium
   let healthPremium = prov.healthPremium ? ontarioHealthPremium(taxable) : 0;
   provTax += healthPremium;
 
@@ -76,7 +70,6 @@ function calculate(gross, deductions, provCode, includePayroll) {
   };
 }
 
-/* ── UI ── */
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => n.toLocaleString('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
 const fmtC = (n) => n.toLocaleString('en-CA', { style: 'currency', currency: 'CAD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -112,7 +105,6 @@ function render() {
   $('marg-rate').textContent = pct(r.margRate);
   $('prov-label').textContent = PROVINCES[provCode].name + ' tax';
 
-  // stacked take-home bar
   const bar = $('split-bar');
   bar.innerHTML = '';
   if (r.gross > 0) {
@@ -132,7 +124,6 @@ function render() {
     }
   }
 
-  // federal bracket breakdown
   const tbody = $('brackets');
   tbody.innerHTML = '';
   for (const p of r.fedPieces) {

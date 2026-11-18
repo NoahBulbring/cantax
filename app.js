@@ -19,6 +19,7 @@ function marginalRate(income, brackets) {
 
 function federalBPA(netIncome) {
   const f = FEDERAL;
+  // BPA phases out linearly between the two thresholds
   if (netIncome <= f.bpaPhaseStart) return f.bpaMax;
   if (netIncome >= f.bpaPhaseEnd) return f.bpaMin;
   const frac = (netIncome - f.bpaPhaseStart) / (f.bpaPhaseEnd - f.bpaPhaseStart);
@@ -41,11 +42,14 @@ function calculate(gross, deductions, provCode, includePayroll) {
 
   const fed = taxFromBrackets(taxable, FEDERAL.brackets);
   let fedTax = Math.max(0, fed.tax - federalBPA(taxable) * FEDERAL.creditRate);
+  // Quebec: 16.5% of federal tax is abated
   if (prov.abatement) fedTax *= 1 - prov.abatement;
   const pr = taxFromBrackets(taxable, prov.brackets);
   const provCreditRate = prov.brackets[0].rate;
   let provTax = Math.max(0, pr.tax - prov.bpa * provCreditRate);
   let surtax = 0;
+  // Ontario surtax is charged on provincial tax, not on income
+  // TODO: break the surtax out as its own line in the results instead of folding it into provincial tax
   if (prov.surtax) {
     for (const s of prov.surtax) surtax += Math.max(0, provTax - s.over) * s.rate;
     provTax += surtax;

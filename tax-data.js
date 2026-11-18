@@ -1,6 +1,7 @@
 /* 2025 tax year data. Sources: CRA indexation factors for 2025, provincial budgets.
    Federal first-bracket rate shown as 14.5%: the legislated mid-2025 rate cut
-   (15% Jan-Jun, 14% Jul-Dec) averages to 14.5% for the full tax year. */
+   (15% Jan-Jun, 14% Jul-Dec) averages to 14.5% for the full tax year.
+   TODO: roll to 2026 once CRA posts the indexation factors (usually late Nov). */
 
 const TAX_YEAR = 2025;
 
